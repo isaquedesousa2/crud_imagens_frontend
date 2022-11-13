@@ -1,4 +1,4 @@
-// COMPONENTE MODAL 
+// COMPONENTE MODAL
 
 import { Box, Button, Modal, Stack, TextField } from "@mui/material";
 import React from "react";
@@ -26,6 +26,7 @@ export default function ModalCustom({
                     width: "400px",
                     p: "20px",
                     borderRadius: "4px",
+                    m: 2,
                 }}
             >
                 <Stack gap="10px">

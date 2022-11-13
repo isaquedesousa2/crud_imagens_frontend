@@ -1,6 +1,6 @@
 // COMPONENTE QUE ENVOLVE A GRID DAS IMAGENS
 
-import { useState,  useContext } from "react";
+import { useState, useContext } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -10,11 +10,7 @@ import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import ModalCustom from "./ModalCustom";
 
-export default function ContainerDashboard({
-    children,
-    head,
-    setControl,
-}) {
+export default function ContainerDashboard({ children, head, setControl }) {
     // CONTROLE DE ESTADOS DA APLICACAO
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
@@ -22,7 +18,6 @@ export default function ContainerDashboard({
     const { user } = useContext(AuthContext);
 
     const handleModal = () => setOpen((open) => !open);
-
 
     // FUNCAO PARA ADICIONAR UMA NOVA IMAGEM
     const handleAddImage = async () => {
@@ -48,7 +43,6 @@ export default function ContainerDashboard({
         }
     };
 
-
     // MODAL QUE ABRE AO CLICAR PARA ADICIONAR UMA IMAGEM
     const openModal = () => {
         return (
@@ -61,7 +55,6 @@ export default function ContainerDashboard({
             />
         );
     };
-
 
     // RENDERIZACAO DA PAGINA
     return (
@@ -86,11 +79,15 @@ export default function ContainerDashboard({
                     }}
                 >
                     <Stack
-                        flexDirection="row"
-                        alignItems="center"
-                        justifyContent="space-between"
                         sx={{
                             marginX: "35px",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            "@media(maxWidth: 600px)": {
+                                flexDirection: "column",
+                                justifyContent: "center",
+                            },
                         }}
                     >
                         <Typography
