@@ -1,6 +1,8 @@
+// PAGINA DA DASHBOARD
+
 import { useState, useEffect, useContext } from "react";
 import ContainerDashboard from "../../components/ContainerDashboard";
-import CardAction from "../../components/CardAction";
+import CardAction from "../../components/ImageContainer";
 import { checkToken } from "../../helpers/checkToken";
 import { Box, Stack } from "@mui/system";
 import {
@@ -12,54 +14,46 @@ import {
     Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import axiosResquests from "../../helpers/axiosRequests";
 
 export default function Dashboard() {
+    // CONTROLE DE ESTADOS DA APLICACAO
     const [search, setSearch] = useState("");
     const [open, setOpen] = useState();
     const [images, setImages] = useState();
     const [control, setControl] = useState(false);
     const [id, setId] = useState();
     const { user } = useContext(AuthContext);
+    const { get, _delete } = axiosResquests;
 
     const handleModal = () => setOpen((open) => !open);
 
+    // FUNCAO PARA BUSCAR IMAGENS DO USUARIO
     useEffect(() => {
         if (user) {
-            const options = {
-                method: "POST",
-                url: "/api/images/search",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json;charset=UTF-8",
-                },
-                data: {
-                    user: user["user"]["id"],
-                },
+            const searchImage = async () => {
+                const res = await get({
+                    url: `https://faculdade.herokuapp.com/api/v1/imagens/${user["user"]["id"]}`,
+                });
+                console.log(res);
+
+                setImages(res.data);
             };
-            async function get() {
-                const res = await axios(options);
-                setImages(res.data["data"]);
-            }
-            get();
+
+            searchImage();
         }
     }, [control, user]);
 
+    // FUNCAO PARA DELETAR IMAGEM SELECIONADA
     const handleDeleteImage = async () => {
         const formData = new FormData();
         formData.append("id", id);
-        const options = {
-            method: "DELETE",
-            url: "https://faculdade.herokuapp.com/api/v1/imagens/",
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json;charset=UTF-8",
-            },
-            data: formData,
-        };
 
-        const res = await axios(options);
+        const res = await _delete({
+            url: "https://faculdade.herokuapp.com/api/v1/imagens/",
+            data: formData,
+        });
 
         if (res.status == 200) {
             handleModal();
@@ -67,6 +61,7 @@ export default function Dashboard() {
         }
     };
 
+    // MODAL QUE ABRE QUANDO APERTA PARA DELETAR A IMAGEM
     const openModal = () => {
         return (
             <Modal
@@ -110,10 +105,12 @@ export default function Dashboard() {
         );
     };
 
+    // FUNCAO PARA FILTRAR AS IMAGENS AO DIGITAR NO CAMPO DE BUSCAR
     const filter = search.length
         ? images.filter((data) => data.name.includes(search))
         : images;
 
+    // RENDERIZACAO DA PAGINA
     return (
         <ContainerDashboard
             head="Minhas fotos"
@@ -187,4 +184,5 @@ export default function Dashboard() {
     );
 }
 
+// FUNCAO QUE VERIFICAR SE EXISTE UM COOKIE E SE PODE ACESSAR A PAGINA
 export const getServerSideProps = async (context) => checkToken(context);

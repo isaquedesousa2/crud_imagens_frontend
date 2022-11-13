@@ -1,8 +1,9 @@
+// PAGINA PARA REALIZAR CADASTRO
+
 import {
     Box,
     Button,
     FormControl,
-    FormHelperText,
     IconButton,
     InputAdornment,
     OutlinedInput,
@@ -16,6 +17,7 @@ import { AuthContext } from "../../context/AuthContext";
 import Link from "next/link";
 
 export default function Entrar() {
+    // CONTROLE DE ESTADOS DA APLICACAO
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -23,15 +25,29 @@ export default function Entrar() {
     const [error, setError] = useState("");
     const { register } = useContext(AuthContext);
 
+    // FUNCAO QUE OCULTA E EXIBE A SENHA
     const handlePassword = () => setShowPassword(!showPassword);
 
+    // FUNCAO QUE CHAMA O REGISTER DO AUTH CONTEXT E VERIFICA SE A SENHA E VALIDA
     const handleSubmitRegister = async (e) => {
-        e.preventDefault();
-        const res = await register({ email, password });
+        setError("");
 
-        console.log(res);
+        e.preventDefault();
+
+        if (password != passwordConfirm) {
+            setError("");
+
+            setError("Senha são diferentes");
+        } else {
+            const res = await register({ email, password });
+
+            if (res == 401) {
+                setError("Email já cadastrado!");
+            }
+        }
     };
 
+    // RENDERIZACAO DA PAGINA
     return (
         <Box
             sx={{
@@ -52,6 +68,7 @@ export default function Entrar() {
                     width: "100%",
                     maxWidth: "400px",
                     textAlign: "center",
+                    p: 2,
                 }}
             >
                 <Box
@@ -149,10 +166,15 @@ export default function Entrar() {
                         />
                     </FormControl>
 
+                    <Typography color="red" fontSize={12}>
+                        {error}
+                    </Typography>
+
                     <Button
                         type="submit"
                         variant="contained"
                         sx={{
+                            mt: 2,
                             mb: 2,
                         }}
                     >
@@ -172,5 +194,3 @@ export default function Entrar() {
         </Box>
     );
 }
-
-Entrar.displayName = "Login";

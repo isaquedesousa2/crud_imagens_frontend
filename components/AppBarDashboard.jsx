@@ -1,3 +1,5 @@
+// APPBAR
+
 import * as React from "react";
 import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
@@ -20,7 +22,7 @@ const AppBar = styled(MuiAppBar, {
     }),
 }));
 
-export default function AppBarDashboard({ setOpen }) {
+export default function AppBarDashboard() {
     const router = useRouter();
     const [cookies, setCookie, removeCookie] = useCookies(["auth-token"]);
     return (

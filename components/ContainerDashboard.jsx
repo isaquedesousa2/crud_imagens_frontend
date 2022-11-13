@@ -1,19 +1,21 @@
-import { useState, useEffect, useContext } from "react";
+// COMPONENTE QUE ENVOLVE A GRID DAS IMAGENS
+
+import { useState,  useContext } from "react";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import CssBaseline from "@mui/material/CssBaseline";
-import { Button, Stack, TextField, Typography } from "@mui/material";
-import Modal from "@mui/material/Modal";
+import { Button, Stack, Typography } from "@mui/material";
 import AppBarDashboard from "/components/AppBarDashboard";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
+import ModalCustom from "./ModalCustom";
 
 export default function ContainerDashboard({
     children,
     head,
-    reaload,
     setControl,
 }) {
+    // CONTROLE DE ESTADOS DA APLICACAO
     const [open, setOpen] = useState(false);
     const [name, setName] = useState("");
     const [image, setImage] = useState("");
@@ -21,6 +23,8 @@ export default function ContainerDashboard({
 
     const handleModal = () => setOpen((open) => !open);
 
+
+    // FUNCAO PARA ADICIONAR UMA NOVA IMAGEM
     const handleAddImage = async () => {
         const formData = new FormData();
         formData.append("image", image);
@@ -44,60 +48,22 @@ export default function ContainerDashboard({
         }
     };
 
+
+    // MODAL QUE ABRE AO CLICAR PARA ADICIONAR UMA IMAGEM
     const openModal = () => {
         return (
-            <Modal
+            <ModalCustom
                 open={open}
-                onClose={handleModal}
-                sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                }}
-            >
-                <Box
-                    sx={{
-                        background: "#fff",
-                        width: "400px",
-                        p: "20px",
-                        borderRadius: "4px",
-                    }}
-                >
-                    <Stack gap="10px">
-                        <TextField
-                            fullWidth
-                            placeholder="Nome da foto"
-                            onChange={(e) => setName(e.target.value)}
-                        />
-                        <TextField
-                            fullWidth
-                            type="file"
-                            onChange={(e) => setImage(e.target.files[0])}
-                        />
-                    </Stack>
-                    <Stack flexDirection="row" gap="10px" sx={{ mt: "20px" }}>
-                        <Button
-                            color="error"
-                            variant="contained"
-                            onClick={handleModal}
-                            sx={{ flex: 1 }}
-                        >
-                            Cancelar
-                        </Button>
-                        <Button
-                            color="success"
-                            variant="contained"
-                            onClick={handleAddImage}
-                            sx={{ flex: 1 }}
-                        >
-                            Salvar
-                        </Button>
-                    </Stack>
-                </Box>
-            </Modal>
+                handleModal={handleModal}
+                handleAddImage={handleAddImage}
+                setName={setName}
+                setImage={setImage}
+            />
         );
     };
 
+
+    // RENDERIZACAO DA PAGINA
     return (
         <Box sx={{ display: "flex" }}>
             <CssBaseline />

@@ -1,8 +1,9 @@
+// PAGINA PARA REALIZAR O LOGIN
+
 import {
     Box,
     Button,
     FormControl,
-    FormHelperText,
     IconButton,
     InputAdornment,
     OutlinedInput,
@@ -16,18 +17,27 @@ import { AuthContext } from "../../context/AuthContext";
 import Link from "next/link";
 
 export default function Entrar() {
+    // CONTROLE DE ESTADOS DA APLICACAO
     const [showPassword, setShowPassword] = useState(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const { Login } = useContext(AuthContext);
+    const [error, setError] = useState("");
 
     const handlePassword = () => setShowPassword(!showPassword);
 
+    // FUNCAO QUE CHAMA O LOGIN DO AUTH CONTEXT E VERIFICA SE E VALIDO
     const handleSubmitLogin = async (e) => {
+        setError("");
+
         e.preventDefault();
-        await Login({ email, password });
+        const res = await Login({ email, password });
+        if (res == 401) {
+            setError("Email ou senha inválidos");
+        }
     };
 
+    // RENDERIZACAO DA PAGINA
     return (
         <Box
             sx={{
@@ -48,6 +58,7 @@ export default function Entrar() {
                     width: "100%",
                     maxWidth: "400px",
                     textAlign: "center",
+                    p: 2,
                 }}
             >
                 <Box
@@ -78,7 +89,6 @@ export default function Entrar() {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                         />
-                        <FormHelperText></FormHelperText>
                     </FormControl>
                     <FormControl variant="outlined" sx={{ marginBottom: 2 }}>
                         <OutlinedInput
@@ -111,10 +121,19 @@ export default function Entrar() {
                                 </InputAdornment>
                             }
                         />
-                        <FormHelperText></FormHelperText>
                     </FormControl>
+                    <Typography color="red" fontSize={12}>
+                        {error}
+                    </Typography>
 
-                    <Button type="submit" variant="contained">
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        sx={{
+                            mt: 2,
+                            mb: 2,
+                        }}
+                    >
                         Entrar
                     </Button>
                 </Box>
@@ -131,5 +150,3 @@ export default function Entrar() {
         </Box>
     );
 }
-
-Entrar.displayName = "Login";
